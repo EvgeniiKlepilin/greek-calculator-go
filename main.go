@@ -3,7 +3,7 @@ package main
 import "fmt"
 
 func main() {
-	puzzle := [5][4][12]int8{
+	puzzle := [][][]int8{
 		{
 			{5, 10, 7, 16, 8, 7, 8, 8, 3, 4, 12, 2},
 			{3, 14, 14, 21, 21, 9, 9, 4, 4, 6, 6, 3},
@@ -36,45 +36,68 @@ func main() {
 		},
 	}
 
-	firstLayer := [4][12]int8{
-		{5, 10, 7, 16, 8, 7, 8, 8, 3, 4, 12, 2},
-		{3, 14, 14, 21, 21, 9, 9, 4, 4, 6, 6, 3},
-		{9, 10, 11, 12, 13, 14, 15, 4, 5, 6, 7, 8},
-		{11, 14, 14, 11, 14, 11, 14, 11, 11, 14, 11, 14},
-	}
+	// fmt.Println(puzzle[4][3])
+	// rotateRow(puzzle, 4, 3)
+	// fmt.Println(puzzle[4][3])
+	//
+	// fmt.Println(puzzle[0])
+	// rotateDial(puzzle, 0)
+	// fmt.Println(puzzle[0])
 
-	secondLayer := [4][12]int8{
-		{12, 0, 6, 0, 10, 0, 10, 0, 1, 0, 9, 0},
-		{2, 13, 9, 0, 17, 19, 3, 12, 3, 26, 6, 0},
-		{6, 0, 14, 12, 3, 8, 9, 0, 9, 20, 12, 3},
-		{7, 14, 11, 0, 8, 0, 16, 2, 7, 0, 9, 0},
-	}
+	// fmt.Println(calculateColumn(puzzle[0], 0))
 
-	thirdLayer := [4][12]int8{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{9, 0, 5, 0, 10, 0, 8, 0, 22, 0, 16, 0},
-		{12, 0, 21, 6, 15, 4, 9, 18, 11, 26, 14, 1},
-		{7, 8, 9, 13, 9, 7, 13, 21, 17, 4, 5, 0},
-	}
+	// fmt.Println(puzzle)
+	layeredDials := layerDials(puzzle)
+	// fmt.Println(layeredDials)
+	fmt.Println(calculateColumns(layeredDials, true))
+	fmt.Println(calculateColumns(layeredDials, false))
+}
 
-	fourthLayer := [4][12]int8{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{15, 0, 0, 14, 0, 9, 0, 12, 0, 4, 0, 7},
-		{6, 0, 11, 11, 6, 11, 0, 6, 17, 7, 3, 0},
+func rotateDial(s [][][]int8, dial int8) {
+	for rowIndex := range s[dial] {
+		rotateRow(s, dial, int8(rowIndex))
 	}
+}
 
-	fifthLayer := [4][12]int8{
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-		{15, 0, 8, 0, 3, 0, 6, 0, 10, 0, 7, 0},
+func rotateRow(s [][][]int8, dial int8, row int8) {
+	s[dial][row] = append(s[dial][row][1:], s[dial][row][0])
+}
+
+func calculateColumn(s [][]int8, column int8) (sum int8) {
+	for rowIndex := range s {
+		sum += s[rowIndex][column]
 	}
+	return
+}
 
-	fmt.Println(puzzle)
-	fmt.Println(firstLayer)
-	fmt.Println(secondLayer)
-	fmt.Println(thirdLayer)
-	fmt.Println(fourthLayer)
-	fmt.Println(fifthLayer)
+func calculateColumns(s [][]int8, calculateAll bool) (sums []int8, ok bool) {
+	for columnIndex := range s[0] {
+		sum := calculateColumn(s, int8(columnIndex))
+		if sum != 42 {
+			ok = false
+			if !calculateAll {
+				return
+			}
+		}
+		sums = append(sums, sum)
+	}
+	ok = true
+	return
+}
+
+func layerDials(s [][][]int8) (layeredDials [][]int8) {
+	layeredDials = make([][]int8, 4)
+	for i := range layeredDials {
+		layeredDials[i] = make([]int8, 12)
+	}
+	for dial := len(s) - 1; dial >= 0; dial-- {
+		for rowIndex := range s[dial] {
+			for columnIndex, value := range s[dial][rowIndex] {
+				if layeredDials[rowIndex][columnIndex] == 0 {
+					layeredDials[rowIndex][columnIndex] = value
+				}
+			}
+		}
+	}
+	return
 }
