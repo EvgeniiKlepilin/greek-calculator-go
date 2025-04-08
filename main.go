@@ -36,21 +36,32 @@ func main() {
 		},
 	}
 
-	// fmt.Println(puzzle[4][3])
-	// rotateRow(puzzle, 4, 3)
-	// fmt.Println(puzzle[4][3])
-	//
-	// fmt.Println(puzzle[0])
-	// rotateDial(puzzle, 0)
-	// fmt.Println(puzzle[0])
+	bruteForce(puzzle)
+}
 
-	// fmt.Println(calculateColumn(puzzle[0], 0))
+func bruteForce(s [][][]int8) {
+	for range 12 {
+		for range 12 {
+			for range 12 {
+				for range 12 {
+					layerCalculateAndCheck(s)
+					rotateDial(s, 4)
+				}
+				rotateDial(s, 3)
+			}
+			rotateDial(s, 2)
+		}
+		rotateDial(s, 1)
+	}
+	rotateDial(s, 0)
+}
 
-	// fmt.Println(puzzle)
-	layeredDials := layerDials(puzzle)
-	// fmt.Println(layeredDials)
-	fmt.Println(calculateColumns(layeredDials, true))
-	fmt.Println(calculateColumns(layeredDials, false))
+func layerCalculateAndCheck(s [][][]int8) {
+	layeredDials := layerDials(s)
+	_, isSolved := calculateColumns(layeredDials, false)
+	if isSolved {
+		fmt.Println("Solution: ", layeredDials)
+	}
 }
 
 func rotateDial(s [][][]int8, dial int8) {
