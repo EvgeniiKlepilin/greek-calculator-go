@@ -1,7 +1,9 @@
 # Greek Calculator Solution in Go
 Solving Greek Calculator puzzle with Golang
 
+<p align="center">
 <img width="489" alt="calculator_puzzle" src="https://github.com/user-attachments/assets/63c9eb52-4d9c-48dc-97f2-37f946c10cc6" style="display: block; margin: 0 auto" />
+</p>
 
 ## What is the Greek Calculator Puzzle?
 The Greek Calculator Puzzle also known as Grecian Computer presents a device where one has to figure out how to adjust five different dials with numbers on each of them to add up to 42 in each column.
